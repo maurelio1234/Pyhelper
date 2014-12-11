@@ -1,8 +1,12 @@
-from bottle import get, route, run, request, response, HTTPError
+from gae import bottle
+from bottle import get, route, run, request, response, HTTPError, Bottle
+from google.appengine.ext.webapp.util import run_wsgi_app
 import random
 import databaseInMemory as database
 
 random.seed()
+
+bottle = Bottle()
 
 def random_id():
 	id = ''
@@ -15,13 +19,13 @@ def create_document(content):
 	database.put(new_doc, content)
 	return new_doc
 	
-@route('/share')
+@bottle.route('/share')
 def share():
 	content = request.params.content
 	ret = { 'id': create_document(content) }
 	return ret
 	
-@get('/share/<id>')
+@bottle.get('/share/<id>')
 def access(id):
 	content = database.get(id)
 	if content:
@@ -30,5 +34,10 @@ def access(id):
 	else:
 		return HTTPError(404)
 
+#app = bottle.default_app()
+
 if __name__ == '__main__':
-	run(host='localhost', port=8080, debug=True)
+	#run(host='localhost', port=8080, debug=True)
+	#run_wsgi_app(bottle.default_app())
+	#bottle.default_app().run(server='gae')
+	pass
