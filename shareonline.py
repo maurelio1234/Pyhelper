@@ -1,8 +1,17 @@
-from gae import bottle
-from bottle import get, route, run, request, response, HTTPError, Bottle
-from google.appengine.ext.webapp.util import run_wsgi_app
+
+running_in_ipad = False
+
+try:
+	from google.appengine.ext.webapp.util import run_wsgi_app
+	from gae import bottle
+	import databaseInMemory as database
+except ImportError: # i.e. if running in my iPad
+	import bottle
+	import databaseInMemory as database
+	running_in_ipad = True 
+	
 import random
-import databaseInMemory as database
+from bottle import get, route, run, request, response, HTTPError, Bottle
 
 random.seed()
 
@@ -34,10 +43,5 @@ def access(id):
 	else:
 		return HTTPError(404)
 
-#app = bottle.default_app()
-
-if __name__ == '__main__':
-	#run(host='localhost', port=8080, debug=True)
-	#run_wsgi_app(bottle.default_app())
-	#bottle.default_app().run(server='gae')
-	pass
+if running_in_ipad:
+	run(host='localhost', port=8080, debug=True, app=bottle)
