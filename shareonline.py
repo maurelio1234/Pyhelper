@@ -1,25 +1,29 @@
 
-running_in_ipad = False
+generated_id_length = 10
 
 try:
 	from google.appengine.ext.webapp.util import run_wsgi_app
-	from gae import bottle
-	import databaseInMemory as database
-except ImportError: # i.e. if running in my iPad
-	import bottle
-	import databaseInMemory as database
+	from gae import database
+	from gae.bottle import Bottle, HTTPError, request, response
+	running_in_ipad = False
+except ImportError: 
+	from test import database
+	from bottle import run, Bottle, HTTPError, request, response
 	running_in_ipad = True 
 	
 import random
-from bottle import get, route, run, request, response, HTTPError, Bottle
 
 random.seed()
 
-bottle = Bottle()
+if running_in_ipad:
+	bottle = Bottle()
+else:
+	# adding catchall so that I will get exception stack traces when debugging
+	bottle = Bottle(catchall=False) 
 
 def random_id():
 	id = ''
-	for i in range(1,10):
+	for i in range(1,generated_id_length):
 		id += str(random.randint(0,9))
 	return id
 
@@ -28,7 +32,7 @@ def create_document(content):
 	database.put(new_doc, content)
 	return new_doc
 	
-@bottle.route('/share')
+@bottle.route('/share', method=['GET', 'POST'])
 def share():
 	content = request.params.content
 	ret = { 'id': create_document(content) }
