@@ -35,8 +35,14 @@ def create_document(content):
 @bottle.route('/share', method=['GET', 'POST'])
 def share():
 	content = request.params.content
-	ret = { 'id': create_document(content) }
-	return ret
+	if content: # TODO: in the future, support proper RESTfulness
+		ret = { 'id': create_document(content) }
+		return ret
+	else:
+		ret = ""
+		for item in database.all():
+			ret += str(item) + "\n"
+		return ret
 	
 @bottle.get('/share/<id>')
 def access(id):
