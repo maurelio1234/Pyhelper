@@ -1,14 +1,21 @@
 
 generated_id_length = 10
+force_ipad_mode_on_gae = True
 
 try:
+	if force_ipad_mode_on_gae: 
+		raise ImportError()
+
 	from google.appengine.ext.webapp.util import run_wsgi_app
 	from gae import database
 	from gae.bottle import Bottle, HTTPError, request, response
 	running_in_ipad = False
 except ImportError: 
 	from test import database
-	from bottle import run, Bottle, HTTPError, request, response
+	if force_ipad_mode_on_gae:
+		from gae.bottle import Bottle, HTTPError, request, response
+	else:
+		from bottle import run, Bottle, HTTPError, request, response
 	running_in_ipad = True 
 	
 import random
@@ -53,5 +60,5 @@ def access(id):
 	else:
 		return HTTPError(404)
 
-if running_in_ipad:
+if running_in_ipad and not force_ipad_mode_on_gae:
 	run(host='localhost', port=8080, debug=True, app=bottle)
