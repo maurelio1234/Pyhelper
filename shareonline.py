@@ -55,8 +55,10 @@ def share():
 def access(id):
 	content = database.get(id)
 	if content:
-		response.content_type = 'text/plain'
-		return content
+		response.content_type = 'text/html'
+
+		from plaintext2html import plaintext2html
+		return "<html><head><title>"+str(id)+"</title></head><body>"+plaintext2html(content)+"</body></html>"
 	else:
 		return HTTPError(404)
 
