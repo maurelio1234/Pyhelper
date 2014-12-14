@@ -11,3 +11,6 @@ def get(id):
 		
 def put(id, value):
 	data[id] = value
+
+def all():
+	return data.iterkeys()

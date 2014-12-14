@@ -10,3 +10,6 @@ def get(id):
 	res = StoredValue.get_by_id(id)
 	if res: return res.value
 	else: return None
+
+def all():
+	return [id.id() for id in StoredValue.query().iter(keys_only=True)]
