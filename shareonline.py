@@ -1,6 +1,6 @@
 
 generated_id_length = 10
-force_ipad_mode_on_gae = True
+force_ipad_mode_on_gae = False 
 
 try:
 	if force_ipad_mode_on_gae: 
@@ -22,7 +22,7 @@ import random
 
 random.seed()
 
-if running_in_ipad:
+if running_in_ipad and not force_ipad_mode_on_gae:
 	bottle = Bottle()
 else:
 	# adding catchall so that I will get exception stack traces when debugging
