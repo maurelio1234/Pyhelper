@@ -1,7 +1,7 @@
 from google.appengine.ext import ndb
 
 class StoredValue(ndb.Model):
-  value = ndb.StringProperty()
+  value = ndb.TextProperty()
 
 def put(id, value):
 	StoredValue(id=id, value=value).put()
